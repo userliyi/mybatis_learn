@@ -48,7 +48,7 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
     try {
 
       if (Object.class.equals(method.getDeclaringClass())) {
-        return method.invoke(this, args);
+        return method.invoke(this, args);//没看懂
       } else if (method.isDefault()) {
         return invokeDefaultMethod(proxy, method, args);
       }

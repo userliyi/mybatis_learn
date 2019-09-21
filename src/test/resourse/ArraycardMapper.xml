@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.liyi.Test.ArraycardMapper">
+  <resultMap id="BaseResultMap" type="org.liyi.Test.Arraycard">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="model" jdbcType="VARCHAR" property="model" />
+    <result column="vendor" jdbcType="VARCHAR" property="vendor" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="card" jdbcType="VARCHAR" property="card" />
+    <result column="creator" jdbcType="VARCHAR" property="creator" />
+    <result column="date" jdbcType="VARCHAR" property="date" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, name, model, vendor, phone, password, email, card, creator, date
+  </sql>
+  <select id="selectByExample" parameterType="org.liyi.Test.ArraycardExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from arraycard
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from arraycard
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from arraycard
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="org.liyi.Test.ArraycardExample">
+    delete from arraycard
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.liyi.Test.Arraycard">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into arraycard (name, model, vendor, 
+      phone, password, email, 
+      card, creator, date
+      )
+    values (#{name,jdbcType=VARCHAR}, #{model,jdbcType=VARCHAR}, #{vendor,jdbcType=VARCHAR}, 
+      #{phone,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 
+      #{card,jdbcType=VARCHAR}, #{creator,jdbcType=VARCHAR}, #{date,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="org.liyi.Test.Arraycard">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into arraycard
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        name,
+      </if>
+      <if test="model != null">
+        model,
+      </if>
+      <if test="vendor != null">
+        vendor,
+      </if>
+      <if test="phone != null">
+        phone,
+      </if>
+      <if test="password != null">
+        password,
+      </if>
+      <if test="email != null">
+        email,
+      </if>
+      <if test="card != null">
+        card,
+      </if>
+      <if test="creator != null">
+        creator,
+      </if>
+      <if test="date != null">
+        date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="model != null">
+        #{model,jdbcType=VARCHAR},
+      </if>
+      <if test="vendor != null">
+        #{vendor,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null">
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="card != null">
+        #{card,jdbcType=VARCHAR},
+      </if>
+      <if test="creator != null">
+        #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="date != null">
+        #{date,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.liyi.Test.ArraycardExample" resultType="java.lang.Long">
+    select count(*) from arraycard
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update arraycard
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.name != null">
+        name = #{record.name,jdbcType=VARCHAR},
+      </if>
+      <if test="record.model != null">
+        model = #{record.model,jdbcType=VARCHAR},
+      </if>
+      <if test="record.vendor != null">
+        vendor = #{record.vendor,jdbcType=VARCHAR},
+      </if>
+      <if test="record.phone != null">
+        phone = #{record.phone,jdbcType=VARCHAR},
+      </if>
+      <if test="record.password != null">
+        password = #{record.password,jdbcType=VARCHAR},
+      </if>
+      <if test="record.email != null">
+        email = #{record.email,jdbcType=VARCHAR},
+      </if>
+      <if test="record.card != null">
+        card = #{record.card,jdbcType=VARCHAR},
+      </if>
+      <if test="record.creator != null">
+        creator = #{record.creator,jdbcType=VARCHAR},
+      </if>
+      <if test="record.date != null">
+        date = #{record.date,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update arraycard
+    set id = #{record.id,jdbcType=INTEGER},
+      name = #{record.name,jdbcType=VARCHAR},
+      model = #{record.model,jdbcType=VARCHAR},
+      vendor = #{record.vendor,jdbcType=VARCHAR},
+      phone = #{record.phone,jdbcType=VARCHAR},
+      password = #{record.password,jdbcType=VARCHAR},
+      email = #{record.email,jdbcType=VARCHAR},
+      card = #{record.card,jdbcType=VARCHAR},
+      creator = #{record.creator,jdbcType=VARCHAR},
+      date = #{record.date,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.liyi.Test.Arraycard">
+    update arraycard
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="model != null">
+        model = #{model,jdbcType=VARCHAR},
+      </if>
+      <if test="vendor != null">
+        vendor = #{vendor,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null">
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="card != null">
+        card = #{card,jdbcType=VARCHAR},
+      </if>
+      <if test="creator != null">
+        creator = #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="date != null">
+        date = #{date,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.liyi.Test.Arraycard">
+    update arraycard
+    set name = #{name,jdbcType=VARCHAR},
+      model = #{model,jdbcType=VARCHAR},
+      vendor = #{vendor,jdbcType=VARCHAR},
+      phone = #{phone,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      card = #{card,jdbcType=VARCHAR},
+      creator = #{creator,jdbcType=VARCHAR},
+      date = #{date,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

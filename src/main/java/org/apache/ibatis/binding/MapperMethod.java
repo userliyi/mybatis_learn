@@ -47,6 +47,9 @@ import org.apache.ibatis.session.SqlSession;
  */
 public class MapperMethod {
 
+  /**
+   * 存查询类型和查询方法两个信息
+   */
   private final SqlCommand command;
   private final MethodSignature method;
 
@@ -217,16 +220,23 @@ public class MapperMethod {
 
   }
 
+  /**
+   * 提供查询类型和查询方法两个信息
+   */
   public static class SqlCommand {
 
     private final String name;
     private final SqlCommandType type;
 
     public SqlCommand(Configuration configuration, Class<?> mapperInterface, Method method) {
+      //获取方法名
       final String methodName = method.getName();
+      //获取方法所在的类
       final Class<?> declaringClass = method.getDeclaringClass();
+      //获取映射语句对象，
       MappedStatement ms = resolveMappedStatement(mapperInterface, methodName, declaringClass,
           configuration);
+      //如果为null看是否方法上有flush标签语句否则报异常
       if (ms == null) {
         if (method.getAnnotation(Flush.class) != null) {
           name = null;
@@ -238,6 +248,7 @@ public class MapperMethod {
       } else {
         name = ms.getId();
         type = ms.getSqlCommandType();
+        //如果无类型或其他类型则报异常
         if (type == SqlCommandType.UNKNOWN) {
           throw new BindingException("Unknown execution method for: " + name);
         }
@@ -255,11 +266,14 @@ public class MapperMethod {
     private MappedStatement resolveMappedStatement(Class<?> mapperInterface, String methodName,
         Class<?> declaringClass, Configuration configuration) {
       String statementId = mapperInterface.getName() + "." + methodName;
+      //如果config中有这个id的语句直接取出
       if (configuration.hasStatement(statementId)) {
         return configuration.getMappedStatement(statementId);
+        //如果接口名和反方法名相同直接返回null
       } else if (mapperInterface.equals(declaringClass)) {
         return null;
       }
+      //获取该类下（包括其父类的）的所有方法信息，看是否有该方法id
       for (Class<?> superInterface : mapperInterface.getInterfaces()) {
         if (declaringClass.isAssignableFrom(superInterface)) {
           MappedStatement ms = resolveMappedStatement(superInterface, methodName,
@@ -275,18 +289,19 @@ public class MapperMethod {
 
   public static class MethodSignature {
 
-    private final boolean returnsMany;
-    private final boolean returnsMap;
-    private final boolean returnsVoid;
-    private final boolean returnsCursor;
-    private final boolean returnsOptional;
+    private final boolean returnsMany;  //是否多值查询
+    private final boolean returnsMap;  //是否map查询
+    private final boolean returnsVoid; //是否void查询
+    private final boolean returnsCursor; //是否游标查询
+    private final boolean returnsOptional;  //返回类型
     private final Class<?> returnType;
-    private final String mapKey;
+    private final String mapKey;  //获取mapKey的值
     private final Integer resultHandlerIndex;
     private final Integer rowBoundsIndex;
-    private final ParamNameResolver paramNameResolver;
+    private final ParamNameResolver paramNameResolver;  //参数解析器
 
     public MethodSignature(Configuration configuration, Class<?> mapperInterface, Method method) {
+      //解析方法返回值类型
       Type resolvedReturnType = TypeParameterResolver.resolveReturnType(method, mapperInterface);
       if (resolvedReturnType instanceof Class<?>) {
         this.returnType = (Class<?>) resolvedReturnType;
@@ -296,13 +311,18 @@ public class MapperMethod {
         this.returnType = method.getReturnType();
       }
       this.returnsVoid = void.class.equals(this.returnType);
+      //是否是集合和数组类型
       this.returnsMany = configuration.getObjectFactory().isCollection(this.returnType) || this.returnType.isArray();
+      //是否是游标类型
       this.returnsCursor = Cursor.class.equals(this.returnType);
+      //java1.8新特性，他是一个容器，保存T类型，不会进行类型检测
       this.returnsOptional = Optional.class.equals(this.returnType);
+      //获取mapKey注解
       this.mapKey = getMapKey(method);
       this.returnsMap = this.mapKey != null;
       this.rowBoundsIndex = getUniqueParamIndex(method, RowBounds.class);
       this.resultHandlerIndex = getUniqueParamIndex(method, ResultHandler.class);
+      //初始化参数名解析器
       this.paramNameResolver = new ParamNameResolver(configuration, method);
     }
 
