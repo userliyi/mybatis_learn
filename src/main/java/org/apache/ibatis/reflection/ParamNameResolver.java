@@ -54,7 +54,7 @@ public class ParamNameResolver {
   private boolean hasParamAnnotation;    //是否使用param注解
 
   public ParamNameResolver(Configuration config, Method method) {
-    final Class<?>[] paramTypes = method.getParameterTypes();
+    final Class<?>[] paramTypes = method.getParameterTypes();  //获取参数类别
     final Annotation[][] paramAnnotations = method.getParameterAnnotations();
     final SortedMap<Integer, String> map = new TreeMap<>();
     int paramCount = paramAnnotations.length;
@@ -85,6 +85,8 @@ public class ParamNameResolver {
       }
       map.put(paramIndex, name);
     }
+    //返回有序映射的不可修改视图
+    //意思是names不可在新往里面填值，但是可以修改Key对应的值
     names = Collections.unmodifiableSortedMap(map);
   }
 
@@ -110,9 +112,10 @@ public class ParamNameResolver {
    * In addition to the default names, this method also adds the generic names (param1, param2,
    * ...).
    * </p>
+   * 用来将param注解的值和实际值建立映射关系
    */
   public Object getNamedParams(Object[] args) {
-    final int paramCount = names.size();
+    final int paramCount = names.size();       //参数的个数
     if (args == null || paramCount == 0) {
       return null;
     } else if (!hasParamAnnotation && paramCount == 1) {
@@ -125,6 +128,7 @@ public class ParamNameResolver {
         // add generic param names (param1, param2, ...)
         final String genericParamName = GENERIC_NAME_PREFIX + String.valueOf(i + 1);
         // ensure not to overwrite parameter named with @Param
+        //如果参数多但是没有指定param，按照顺序赋值为默认Param
         if (!names.containsValue(genericParamName)) {
           param.put(genericParamName, args[entry.getKey()]);
         }

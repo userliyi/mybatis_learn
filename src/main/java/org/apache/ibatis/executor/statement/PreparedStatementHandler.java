@@ -72,6 +72,12 @@ public class PreparedStatementHandler extends BaseStatementHandler {
     return resultSetHandler.handleCursorResultSets(ps);
   }
 
+  /**
+   * 通过connection获取statement对象实例
+   * @param connection
+   * @return
+   * @throws SQLException
+   */
   @Override
   protected Statement instantiateStatement(Connection connection) throws SQLException {
     String sql = boundSql.getSql();

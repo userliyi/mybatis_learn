@@ -423,7 +423,7 @@ public class DefaultResultSetHandler implements ResultSetHandler {
   //
   // PROPERTY MAPPINGS
   //
-
+  //处理结果集实体类
   private boolean applyPropertyMappings(ResultSetWrapper rsw, ResultMap resultMap, MetaObject metaObject, ResultLoaderMap lazyLoader, String columnPrefix)
       throws SQLException {
     final List<String> mappedColumnNames = rsw.getMappedColumnNames(resultMap, columnPrefix);

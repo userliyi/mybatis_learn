@@ -1,11 +1,8 @@
 package org.liyi.Test;
-
-import java.io.Serializable;
-
 /**
  * @author
  */
-public class Arraycard implements Serializable {
+public class Arraycard{
     /**
      *  主键
      */

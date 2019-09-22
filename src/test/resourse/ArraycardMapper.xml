@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.liyi.Test.ArraycardMapper">
-  <resultMap id="BaseResultMap" type="org.liyi.Test.Arraycard">
+  <resultMap id="BaseResultMap" type="org.liyi.Test.ArrayCardDto">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="model" jdbcType="VARCHAR" property="model" />
@@ -88,8 +88,14 @@
       order by ${orderByClause}
     </if>
   </select>
+  <select id="selectByname" resultMap="BaseResultMap">
+     select * from arraycard
+     <where>
+       id=#{param1} and name=#{param2}
+     </where>
+  </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from arraycard
     where id = #{id,jdbcType=INTEGER}
@@ -108,12 +114,12 @@
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into arraycard (name, model, vendor, 
-      phone, password, email, 
+    insert into arraycard (name, model, vendor,
+      phone, password, email,
       card, creator, date
       )
-    values (#{name,jdbcType=VARCHAR}, #{model,jdbcType=VARCHAR}, #{vendor,jdbcType=VARCHAR}, 
-      #{phone,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 
+    values (#{name,jdbcType=VARCHAR}, #{model,jdbcType=VARCHAR}, #{vendor,jdbcType=VARCHAR},
+      #{phone,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR},
       #{card,jdbcType=VARCHAR}, #{creator,jdbcType=VARCHAR}, #{date,jdbcType=VARCHAR}
       )
   </insert>

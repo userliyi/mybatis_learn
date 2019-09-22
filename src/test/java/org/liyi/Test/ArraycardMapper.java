@@ -7,6 +7,8 @@ import org.apache.ibatis.annotations.Param;
 public interface ArraycardMapper {
     long countByExample(ArraycardExample example);
 
+    List<ArrayCardDto> selectByname(Integer id,String name);
+
     int deleteByExample(ArraycardExample example);
 
     int deleteByPrimaryKey(Integer id);
@@ -15,9 +17,9 @@ public interface ArraycardMapper {
 
     int insertSelective(Arraycard record);
 
-    List<Arraycard> selectByExample(ArraycardExample example);
+    List<ArrayCardDto> selectByExample(ArraycardExample example);
 
-    Arraycard selectByPrimaryKey(Integer id);
+    ArrayCardDto selectByPrimaryKey(Integer id);
 
     int updateByExampleSelective(@Param("record") Arraycard record, @Param("example") ArraycardExample example);
 

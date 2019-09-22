@@ -54,24 +54,30 @@ public class XMLStatementBuilder extends BaseBuilder {
   }
 
   public void parseStatementNode() {
+    //获取id，即接口方法名
     String id = context.getStringAttribute("id");
     String databaseId = context.getStringAttribute("databaseId");
-
+    //验证DatabaseId是否匹配
     if (!databaseIdMatchesCurrent(id, databaseId, this.requiredDatabaseId)) {
       return;
     }
-
+    //获取标签名称
     String nodeName = context.getNode().getNodeName();
+    //将SqlcommandType设置为标签名称
     SqlCommandType sqlCommandType = SqlCommandType.valueOf(nodeName.toUpperCase(Locale.ENGLISH));
     boolean isSelect = sqlCommandType == SqlCommandType.SELECT;
+    //执行语句时是否刷新缓存
     boolean flushCache = context.getBooleanAttribute("flushCache", !isSelect);
+    //是否对改语句进行二级缓存，对Select元素默认为true
     boolean useCache = context.getBooleanAttribute("useCache", isSelect);
+    //根嵌套结果相关
     boolean resultOrdered = context.getBooleanAttribute("resultOrdered", false);
-
+    //映入sql片段
     // Include Fragments before parsing
     XMLIncludeTransformer includeParser = new XMLIncludeTransformer(configuration, builderAssistant);
     includeParser.applyIncludes(context.getNode());
 
+    //参数类型；将会传入这条语句的参数类的完全限定名或别名。这个属性是可选的，因为 MyBatis 可以通过 TypeHandler 推断出具体传入语句的参数，默认值为 unset。
     String parameterType = context.getStringAttribute("parameterType");
     Class<?> parameterTypeClass = resolveClass(parameterType);
 
@@ -79,9 +85,11 @@ public class XMLStatementBuilder extends BaseBuilder {
     LanguageDriver langDriver = getLanguageDriver(lang);
 
     // Parse selectKey after includes and remove them.
+    //处理selectkey
     processSelectKeyNodes(id, parameterTypeClass, langDriver);
 
     // Parse the SQL (pre: <selectKey> and <include> were parsed and removed)
+    //设置主键自增方式
     KeyGenerator keyGenerator;
     String keyStatementId = id + SelectKeyGenerator.SELECT_KEY_SUFFIX;
     keyStatementId = builderAssistant.applyCurrentNamespace(keyStatementId, true);
@@ -93,14 +101,19 @@ public class XMLStatementBuilder extends BaseBuilder {
           ? Jdbc3KeyGenerator.INSTANCE : NoKeyGenerator.INSTANCE;
     }
 
+    //表示的是一个sql语句
     SqlSource sqlSource = langDriver.createSqlSource(configuration, context, parameterTypeClass);
+    //STATEMENT，PREPARED 或 CALLABLE 的一个。这会让 MyBatis 分别使用 Statement，PreparedStatement 或 CallableStatement，默认值：PREPARED。
     StatementType statementType = StatementType.valueOf(context.getStringAttribute("statementType", StatementType.PREPARED.toString()));
     Integer fetchSize = context.getIntAttribute("fetchSize");
     Integer timeout = context.getIntAttribute("timeout");
     String parameterMap = context.getStringAttribute("parameterMap");
+    //结果类型；表示从这条语句中返回的期望类型的类的完全限定名或别名。注意如果是集合情形，那应该是集合可以包含的类型，而不能是集合本身。不能和resultMap同时使用。
     String resultType = context.getStringAttribute("resultType");
     Class<?> resultTypeClass = resolveClass(resultType);
+    //结果类型；外部 resultMap 的命名引用。
     String resultMap = context.getStringAttribute("resultMap");
+    //结果集类型；FORWARD_ONLY，SCROLL_SENSITIVE 或 SCROLL_INSENSITIVE 中的一个，默认值为 unset （依赖驱动）
     String resultSetType = context.getStringAttribute("resultSetType");
     ResultSetType resultSetTypeEnum = resolveResultSetType(resultSetType);
     if (resultSetTypeEnum == null) {
@@ -110,6 +123,7 @@ public class XMLStatementBuilder extends BaseBuilder {
     String keyColumn = context.getStringAttribute("keyColumn");
     String resultSets = context.getStringAttribute("resultSets");
 
+    //通过buildAssistant将解析得到的参数设置构造成MappedStatement对象
     builderAssistant.addMappedStatement(id, sqlSource, statementType, sqlCommandType,
         fetchSize, timeout, parameterMap, parameterTypeClass, resultMap, resultTypeClass,
         resultSetTypeEnum, flushCache, useCache, resultOrdered,

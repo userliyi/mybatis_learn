@@ -197,10 +197,10 @@ public abstract class BaseExecutor implements Executor {
       throw new ExecutorException("Executor was closed.");
     }
     CacheKey cacheKey = new CacheKey();
-    cacheKey.update(ms.getId());
+    cacheKey.update(ms.getId()); //获取id如org.liyi.Test.UserDao.findByAge
     cacheKey.update(rowBounds.getOffset());
     cacheKey.update(rowBounds.getLimit());
-    cacheKey.update(boundSql.getSql());
+    cacheKey.update(boundSql.getSql()); //如select * from user where age=？
     List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
     TypeHandlerRegistry typeHandlerRegistry = ms.getConfiguration().getTypeHandlerRegistry();
     // mimic DefaultParameterHandler logic
@@ -215,7 +215,7 @@ public abstract class BaseExecutor implements Executor {
         } else if (typeHandlerRegistry.hasTypeHandler(parameterObject.getClass())) {
           value = parameterObject;
         } else {
-          MetaObject metaObject = configuration.newMetaObject(parameterObject);
+          MetaObject metaObject = configuration.newMetaObject(parameterObject);  //默认的MetaObject 的处理，根据参数获取值,这个将和boundSql一起解释
           value = metaObject.getValue(propertyName);
         }
         cacheKey.update(value);

@@ -78,13 +78,13 @@ public class DefaultParameterHandler implements ParameterHandler {
             MetaObject metaObject = configuration.newMetaObject(parameterObject);
             value = metaObject.getValue(propertyName);
           }
-          TypeHandler typeHandler = parameterMapping.getTypeHandler();
-          JdbcType jdbcType = parameterMapping.getJdbcType();
+          TypeHandler typeHandler = parameterMapping.getTypeHandler(); //参数列的TypeHandler
+          JdbcType jdbcType = parameterMapping.getJdbcType();  //jdbcType的处理
           if (value == null && jdbcType == null) {
             jdbcType = configuration.getJdbcTypeForNull();
           }
           try {
-            typeHandler.setParameter(ps, i + 1, value, jdbcType);
+            typeHandler.setParameter(ps, i + 1, value, jdbcType);  //见下面的分析，这里实现了 JDBC的 pst.setString(1,"Tom" + i);
           } catch (TypeException | SQLException e) {
             throw new TypeException("Could not set parameters for mapping: " + parameterMapping + ". Cause: " + e, e);
           }

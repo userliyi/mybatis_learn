@@ -32,12 +32,13 @@ import org.apache.ibatis.reflection.wrapper.ObjectWrapperFactory;
  */
 public class MetaObject {
 
-  private final Object originalObject;
-  private final ObjectWrapper objectWrapper;
-  private final ObjectFactory objectFactory;
-  private final ObjectWrapperFactory objectWrapperFactory;
+  private final Object originalObject;  //例如一个pojo对象，例如User对象类。
+  private final ObjectWrapper objectWrapper; //根据参数对象的不同，在构造函数中配置
+  private final ObjectFactory objectFactory; //Configuration中配置
+  private final ObjectWrapperFactory objectWrapperFactory;  //Configuration中配置
   private final ReflectorFactory reflectorFactory;
 
+  //构造函数，私有
   private MetaObject(Object object, ObjectFactory objectFactory, ObjectWrapperFactory objectWrapperFactory, ReflectorFactory reflectorFactory) {
     this.originalObject = object;
     this.objectFactory = objectFactory;
@@ -45,20 +46,25 @@ public class MetaObject {
     this.reflectorFactory = reflectorFactory;
 
     if (object instanceof ObjectWrapper) {
+      //如果参数对象实现了ObjectWrapper
       this.objectWrapper = (ObjectWrapper) object;
     } else if (objectWrapperFactory.hasWrapperFor(object)) {
+      //如果objectWrapperFactory已经包装了对象，对用objectWrapperFactory的getWrapper
       this.objectWrapper = objectWrapperFactory.getWrapperFor(this, object);
     } else if (object instanceof Map) {
+      //是一个Map对象，使用mybatis的MapWrapper
       this.objectWrapper = new MapWrapper(this, (Map) object);
     } else if (object instanceof Collection) {
+      //是一个CollectionWrapper对象
       this.objectWrapper = new CollectionWrapper(this, (Collection) object);
     } else {
+      //其他默认使用BeanWrapper
       this.objectWrapper = new BeanWrapper(this, object);
     }
   }
 
   /**
-   * 生成自身暂时不知道是什么意思
+   * 对外公开的静态方法
    * @param object
    * @param objectFactory
    * @param objectWrapperFactory

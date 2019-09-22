@@ -140,10 +140,11 @@ public class MapperMethod {
       sqlSession.select(command.getName(), param, method.extractResultHandler(args));
     }
   }
-
+  //select查询多个值的方法
   private <E> Object executeForMany(SqlSession sqlSession, Object[] args) {
     List<E> result;
     Object param = method.convertArgsToSqlCommandParam(args);
+    //rowBounds是mybatis中内嵌的分页功能，不用管
     if (method.hasRowBounds()) {
       RowBounds rowBounds = method.extractRowBounds(args);
       result = sqlSession.selectList(command.getName(), param, rowBounds);
